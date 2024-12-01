@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo de Entrega</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4; /* Fundo claro e clean */
+            color: #333; /* Texto em tom escuro para contraste suave */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            background-color: #fff; /* Fundo branco para o formulário */
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            text-align: center;
+        }
+
+        h1 {
+            color: #333; /* Cor do título */
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            text-align: left;
+            color: #333;
+        }
+
+        input[type="text"], input[type="datetime-local"], textarea, input[type="radio"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd; /* Bordas suaves */
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #fafafa; /* Fundo suave */
+            color: #333;
+        }
+
+        input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+
+        button {
+            background-color: #333; /* Botão escuro */
+            color: #fff; /* Texto branco */
+            padding: 14px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            width: 100%;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #555; /* Hover mais claro */
+        }
+
+        .section-title {
+            margin-top: 30px;
+            font-size: 22px;
+            color: #333;
+            text-align: left;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .small-text {
+            font-size: 14px;
+            color: #888; /* Texto mais suave */
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            button {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cálculo de Entrega</h1>
+        <p>Preencha os dados abaixo para obter o orçamento de entrega do seu item.</p>
+        <form id="formOrcamento" onsubmit="return enviarParaWhatsApp()">
+            <div class="form-section">
+                <label for="nomeRecebedor">1. Nome de quem vai receber:</label>
+                <input type="text" id="nomeRecebedor" name="nomeRecebedor" required>
+            </div>
+
+            <div class="form-section">
+                <label for="nomeResponsavel">2. Nome da pessoa que o motoboy deve pegar o item:</label>
+                <input type="text" id="nomeResponsavel" name="nomeResponsavel" required>
+            </div>
+
+            <div class="form-section">
+                <label for="enderecoColeta">3. Endereço de Coleta:</label>
+                <input type="text" id="enderecoColeta" name="enderecoColeta" placeholder="Rua, Número, Bairro, Cidade, Estado" required>
+            </div>
+
+            <div class="form-section">
+                <label for="enderecoDestino">4. Endereço de Destino:</label>
+                <input type="text" id="enderecoDestino" name="enderecoDestino" placeholder="Rua, Número, Bairro, Cidade, Estado" required>
+            </div>
+
+            <div class="form-section">
+                <label for="tipoEntrega">5. Tipo de Entrega:</label>
+                <input type="radio" id="normal" name="tipoEntrega" value="Normal" required> Normal
+                <input type="radio" id="agendada" name="tipoEntrega" value="Agendada" required> Agendada
+            </div>
+
+            <div class="form-section">
+                <label for="dataHora">6. Preferência de Data e Hora para Coleta:</label>
+                <small class="small-text">(Preencha apenas se a entrega for agendada)</small>
+                <input type="datetime-local" id="dataHora" name="dataHora">
+            </div>
+
+            <div class="form-section">
+                <label for="observacoes">7. Observações Adicionais:</label>
+                <textarea id="observacoes" name="observacoes" placeholder="Itens frágeis, instruções especiais, etc." rows="4"></textarea>
+            </div>
+
+            <div class="form-section">
+                <label for="formaPagamento">8. Forma de Pagamento:</label>
+                <input type="radio" id="pix" name="formaPagamento" value="Pix" required> Pix
+                <input type="radio" id="dinheiro" name="formaPagamento" value="Dinheiro" required> Dinheiro
+                <input type="radio" id="credito" name="formaPagamento" value="Cartão de Crédito" required> Cartão de Crédito
+                <input type="radio" id="debito" name="formaPagamento" value="Cartão de Débito" required> Cartão de Débito
+            </div>
+
+            <button type="submit">Solicitar Preço</button>
+        </form>
+    </div>
+
+    <script>
+        function enviarParaWhatsApp() {
+            var nomeRecebedor = document.getElementById('nomeRecebedor').value;
+            var nomeResponsavel = document.getElementById('nomeResponsavel').value;
+            var enderecoColeta = document.getElementById('enderecoColeta').value;
+            var enderecoDestino = document.getElementById('enderecoDestino').value;
+            var tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked').value;
+            var dataHora = document.getElementById('dataHora').value;
+            var observacoes = document.getElementById('observacoes').value;
+            var formaPagamento = document.querySelector('input[name="formaPagamento"]:checked').value;
+            
+            var numeroWhatsApp = '5521996488798';  // Seu número de WhatsApp com DDD
+
+            // Formata a mensagem para o WhatsApp
+            var mensagem = encodeURIComponent(
+                'Nome de quem vai receber: ' + nomeRecebedor + '\n' +
+                'Nome da pessoa que o motoboy deve pegar o item: ' + nomeResponsavel + '\n' +
+                'Endereço de Coleta: ' + enderecoColeta + '\n' +
+                'Endereço de Destino: ' + enderecoDestino + '\n' +
+                'Tipo de Entrega: ' + tipoEntrega + '\n' +
+                (tipoEntrega === 'Agendada' ? 'Preferência de Data e Hora: ' + dataHora + '\n' : '') +
+                'Observações: ' + observacoes + '\n' +
+                'Forma de Pagamento: ' + formaPagamento
+            );
+
+            // Cria a URL para o WhatsApp
+            var url = 'https://wa.me/' + numeroWhatsApp + '?text=' + mensagem;
+            
+            // Redireciona para o WhatsApp
+            window.open(url, '_blank');
+            
+            return false;  // Impede o envio do formulário padrão
+        }
+    </script>
+</body>
+</html>
